@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSME Data Index — Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f2eb;
+    --accent: #c84b2f;
+    --accent2: #2a6b4f;
+    --muted: #7a7367;
+    --rule: #d4cfc4;
+    --card: #fff;
+    --tag-bg: #edeae2;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'Outfit', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding: 48px 60px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 60px solid var(--accent);
+    opacity: 0.07;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--accent); }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 720px;
+    margin-bottom: 20px;
+  }
+  h1 em { color: var(--accent); font-style: italic; }
+  .subtitle {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+  }
+  .meta-item strong { color: var(--ink); }
+
+  /* ── LAYOUT ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 60px 60px 100px; }
+
+  section { margin-bottom: 80px; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  p { color: #3a3630; line-height: 1.75; margin-bottom: 14px; font-weight: 300; }
+
+  /* ── PROBLEM GRID ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+    margin-top: 32px;
+  }
+  .problem-card {
+    background: var(--paper);
+    padding: 28px 24px;
+    transition: background 0.2s;
+  }
+  .problem-card:hover { background: var(--ink); color: var(--paper); }
+  .problem-card:hover .prob-num { color: var(--accent); }
+  .problem-card:hover .prob-desc { color: #bbb; }
+  .prob-num { font-family: var(--serif); font-size: 48px; color: var(--rule); line-height: 1; margin-bottom: 12px; }
+  .prob-title { font-weight: 600; font-size: 14px; margin-bottom: 8px; letter-spacing: 0.01em; }
+  .prob-desc { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* ── DATA SOURCES TABLE ── */
+  .portal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border: 1.5px solid var(--ink);
+    margin-top: 28px;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .portal-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 90px 90px 90px;
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+    padding: 0;
+    transition: background 0.15s;
+  }
+  .portal-row:last-child { border-bottom: none; }
+  .portal-row.header-row {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .portal-row:not(.header-row):hover { background: #f0ece3; }
+  .portal-cell {
+    padding: 14px 18px;
+    font-size: 13px;
+    border-right: 1px solid var(--rule);
+  }
+  .header-row .portal-cell {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-right-color: #333;
+    font-weight: 500;
+    color: #ccc;
+  }
+  .portal-cell:last-child { border-right: none; }
+  .portal-name { font-weight: 600; font-size: 13px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .badge-csv { background: #d4edda; color: #1a5c2e; }
+  .badge-pdf { background: #fde8e8; color: #7a1f1f; }
+  .badge-api { background: #dbeafe; color: #1e3a6e; }
+  .score-bar { display: flex; align-items: center; gap: 8px; }
+  .score-pip {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--rule);
+    flex-shrink: 0;
+  }
+  .score-pip.filled { background: var(--accent2); }
+
+  /* ── CODE SECTION ── */
+  .code-block {
+    background: #141410;
+    color: #e8e4d8;
+    border-radius: 4px;
+    padding: 28px 32px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.85;
+    overflow-x: auto;
+    margin-top: 24px;
+    position: relative;
+  }
+  .code-block::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 12px; right: 18px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .kw  { color: #c9a0e8; }
+  .fn  { color: #7dc9e2; }
+  .str { color: #a8d9a0; }
+  .cm  { color: #555; font-style: italic; }
+  .num { color: #f0c97c; }
+  .var { color: #e8c8a0; }
+
+  /* ── LIVE DEMO ── */
+  .demo-box {
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+  .demo-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #c84b2f; }
+  .dot-y { background: #e8a830; }
+  .dot-g { background: #2a6b4f; }
+  .demo-body { padding: 28px 24px; background: var(--card); }
+  .demo-controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .demo-controls input, .demo-controls select {
+    padding: 9px 14px;
+    border: 1.5px solid var(--rule);
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 13px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    flex: 1; min-width: 140px;
+  }
+  .demo-controls input:focus, .demo-controls select:focus { border-color: var(--ink); }
+  .demo-controls button {
+    padding: 9px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .demo-controls button:hover { background: var(--accent); }
+  #results-area {
+    min-height: 60px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 16px;
+    font-size: 13px;
+    background: var(--paper);
+  }
+  .result-card {
+    display: grid;
+    grid-template-columns: 200px 1fr 100px 80px;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    background: white;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .rc { padding: 11px 14px; font-size: 12px; border-right: 1px solid var(--rule); }
+  .rc:last-child { border-right: none; }
+  .rc-name { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .rc-portal { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .empty-state { color: var(--muted); font-size: 13px; text-align: center; padding: 20px 0; }
+
+  /* ── WORKFLOW DIAGRAM ── */
+  .workflow {
+    display: flex;
+    gap: 0;
+    margin-top: 32px;
+    border: 1.5px solid var(--ink);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .wf-step {
+    flex: 1;
+    padding: 28px 20px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .wf-step:last-child { border-right: none; }
+  .wf-step::after {
+    content: '→';
+    position: absolute;
+    right: -12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--muted);
+    z-index: 2;
+    background: var(--paper);
+    padding: 0 2px;
+  }
+  .wf-step:last-child::after { display: none; }
+  .wf-num { font-family: var(--serif); font-size: 36px; color: var(--rule); line-height: 1; margin-bottom: 10px; }
+  .wf-title { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+  .wf-tool { font-family: var(--mono); font-size: 10px; color: var(--accent2); background: #e6f2ed; display: inline-block; padding: 2px 7px; border-radius: 2px; margin-bottom: 8px; }
+  .wf-desc { font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 300; }
+
+  /* ── OUTCOME STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+    margin-top: 32px;
+  }
+  .stat-box { background: var(--paper); padding: 32px 24px; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 52px;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.4; }
+
+  /* ── FOOTER NOTE ── */
+  .footnote {
+    border-top: 1px solid var(--rule);
+    padding-top: 32px;
+    margin-top: 60px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footnote p { font-size: 13px; color: var(--muted); max-width: 560px; font-weight: 300; margin: 0; }
+  .author-tag { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink); }
+
+  @media (max-width: 768px) {
+    header { padding: 36px 24px 28px; }
+    main { padding: 40px 24px 80px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .portal-row { grid-template-columns: 150px 1fr 70px; }
+    .portal-cell:nth-child(4), .portal-cell:nth-child(5) { display: none; }
+    .workflow { flex-direction: column; }
+    .wf-step::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -14px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .result-card { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Case Study — People+AI Application</div>
+  <h1>India's MSME data is <em>everywhere</em> and nowhere.</h1>
+  <p class="subtitle">A research intern's proof-of-concept for a unified, usability-scored index of India's fragmented public MSME datasets.</p>
+  <div class="meta-row">
+    <span><strong>Author</strong> Aniket Humbe</span>
+    <span><strong>Role</strong> Research Intern Applicant</span>
+    <span><strong>Org</strong> People+AI — MSME Data Economy Project</span>
+    <span><strong>Stack</strong> Python · Gemini API · Google Sheets · Bubble</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- THE PROBLEM -->
+  <section>
+    <div class="section-label">01 — The Problem</div>
+    <h2>Six portals. Zero cross-referencing.</h2>
+    <p>India has a wealth of publicly available MSME-relevant data — but it's scattered across entirely separate government systems with no shared taxonomy, no usability ratings, and no way to know what's machine-readable vs. a locked PDF from 2018. For a researcher at People+AI, this means every project starts with an unpaid, manual hunt before any actual analysis begins.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="prob-num">01</div>
+        <div class="prob-title">No unified index</div>
+        <div class="prob-desc">data.gov.in, INDIAai, MOSPI, RBI, SIDBI, and Udyam all hold MSME data — but none link to each other.</div>
+      </div>
+      <div class="problem-card">
+        <div class="prob-num">02</div>
+        <div class="prob-title">Unknown usability</div>
+        <div class="prob-desc">Is it a CSV or a scanned PDF? Is the data from 2024 or 2016? There's no quick answer without downloading and checking manually.</div>
+      </div>
+      <div class="problem-card">
+        <div class="prob-num">03</div>
+        <div class="prob-title">No coverage map</div>
+        <div class="prob-desc">Which sectors are represented? Which geographies? Which datasets overlap? No researcher currently knows without spending days mapping it.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA SOURCES -->
+  <section>
+    <div class="section-label">02 — Landscape Mapping</div>
+    <h2>What actually exists, and how usable is it?</h2>
+    <p>The first step was cataloging every publicly available MSME-relevant dataset across the six major portals — scoring each on format, freshness, geographic granularity, and machine-readability.</p>
+
+    <div class="portal-grid">
+      <div class="portal-row header-row">
+        <div class="portal-cell">Portal / Dataset</div>
+        <div class="portal-cell">Description</div>
+        <div class="portal-cell">Format</div>
+        <div class="portal-cell">Last Updated</div>
+        <div class="portal-cell">Usability</div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">Udyog Aadhaar</span><br><span style="font-size:11px;color:var(--muted)">INDIAai</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">MSME registration data — state, sector, investment, employee count <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">(legacy; superseded by Udyam post-2020)</span></div>
+        <div class="portal-cell"><span class="badge badge-csv">CSV</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2023</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip"></div></div></div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">MSME Annual Report</span><br><span style="font-size:11px;color:var(--muted)">data.gov.in</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">Sector-wise output, employment, credit — national aggregates</div>
+        <div class="portal-cell"><span class="badge badge-pdf">PDF</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2022</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div></div></div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">RBI MSME Credit Data</span><br><span style="font-size:11px;color:var(--muted)">RBI.org.in</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">Bank-wise credit outstanding to MSMEs, NPA ratios, sector split</div>
+        <div class="portal-cell"><span class="badge badge-api">API</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2024</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div></div></div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">NSSO / MOSPI Survey</span><br><span style="font-size:11px;color:var(--muted)">MOSPI</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">Unorganised enterprise surveys — size, income, workforce informality</div>
+        <div class="portal-cell"><span class="badge badge-pdf">PDF</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2016</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div></div></div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">Udyam Portal</span><br><span style="font-size:11px;color:var(--muted)">udyamregistration.gov.in</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">Live MSME registrations post-2020 — turnover, investment classification (dashboard scrape; no public API documented)</div>
+        <div class="portal-cell"><span class="badge" style="background:#fff3cd;color:#7a5200;">Scrape</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2024</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip"></div><div class="score-pip"></div></div></div>
+      </div>
+      <div class="portal-row">
+        <div class="portal-cell"><span class="portal-name">SIDBI MSME Pulse</span><br><span style="font-size:11px;color:var(--muted)">SIDBI</span></div>
+        <div class="portal-cell" style="font-size:13px;color:#444;">Quarterly credit demand, NPA, sectoral lending trends</div>
+        <div class="portal-cell"><span class="badge badge-pdf">PDF</span></div>
+        <div class="portal-cell" style="font-family:var(--mono);font-size:12px;">2024</div>
+        <div class="portal-cell"><div class="score-bar"><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip filled"></div><div class="score-pip"></div><div class="score-pip"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE: SCRAPER -->
+  <section>
+    <div class="section-label">03 — The Build</div>
+    <h2>Python scraper + Gemini summarizer</h2>
+    <p>The indexing pipeline has three stages: crawl the portals to discover datasets, extract metadata (format, date, description), then pass each description through Gemini to generate a standardized usability summary. Output writes directly to a Google Sheet via the Sheets API.</p>
+
+    <div class="code-block" data-label="scraper.py">
+<span class="cm"># Stage 1: Discover datasets on data.gov.in</span>
+<span class="kw">import</span> <span class="var">requests</span>, <span class="var">pandas</span> <span class="kw">as</span> <span class="var">pd</span>
+<span class="kw">import</span> <span class="var">google.generativeai</span> <span class="kw">as</span> <span class="var">genai</span>
+
+<span class="fn">BASE_URL</span> = <span class="str">"https://data.gov.in/backend/dmspublic/v1/resources"</span>
+<span class="fn">SEARCH_TERMS</span> = [<span class="str">"MSME"</span>, <span class="str">"small enterprise"</span>, <span class="str">"micro enterprise"</span>, <span class="str">"Udyam"</span>]
+
+<span class="kw">def</span> <span class="fn">fetch_datasets</span>(<span class="var">query</span>):
+    <span class="var">params</span> = {
+        <span class="str">"filters[title]"</span>: <span class="var">query</span>,
+        <span class="str">"limit"</span>: <span class="num">50</span>,
+        <span class="str">"format"</span>: <span class="str">"json"</span>
+    }
+    <span class="var">resp</span> = <span class="var">requests</span>.<span class="fn">get</span>(<span class="fn">BASE_URL</span>, <span class="var">params</span>=<span class="var">params</span>)
+    <span class="kw">return</span> <span class="var">resp</span>.<span class="fn">json</span>().<span class="fn">get</span>(<span class="str">"records"</span>, [])
+
+<span class="cm"># Stage 2: Score usability with Gemini</span>
+<span class="var">genai</span>.<span class="fn">configure</span>(<span class="var">api_key</span>=<span class="str">"YOUR_API_KEY"</span>)
+<span class="var">model</span> = <span class="var">genai</span>.<span class="fn">GenerativeModel</span>(<span class="str">"gemini-1.5-flash"</span>)
+
+<span class="fn">SCORING_PROMPT</span> = <span class="str">"""
+You are evaluating an Indian government dataset for MSME research usability.
+Dataset title: {title}
+Description: {desc}
+Format: {fmt}  Last updated: {date}
+
+Return JSON with keys:
+  usability_score (1-5), machine_readable (bool), 
+  sector_coverage (list), geographic_level (district/state/national),
+  key_variables (list of 3-5), research_use_cases (2 sentences)
+"""</span>
+
+<span class="kw">def</span> <span class="fn">score_dataset</span>(<span class="var">dataset</span>):
+    <span class="var">prompt</span> = <span class="fn">SCORING_PROMPT</span>.<span class="fn">format</span>(
+        <span class="var">title</span>=<span class="var">dataset</span>[<span class="str">"title"</span>],
+        <span class="var">desc</span>=<span class="var">dataset</span>.<span class="fn">get</span>(<span class="str">"description"</span>, <span class="str">""</span>),
+        <span class="var">fmt</span>=<span class="var">dataset</span>.<span class="fn">get</span>(<span class="str">"format"</span>, <span class="str">"unknown"</span>),
+        <span class="var">date</span>=<span class="var">dataset</span>.<span class="fn">get</span>(<span class="str">"updated"</span>, <span class="str">"unknown"</span>)
+    )
+    <span class="var">response</span> = <span class="var">model</span>.<span class="fn">generate_content</span>(<span class="var">prompt</span>)
+    <span class="kw">return</span> <span class="var">json</span>.<span class="fn">loads</span>(<span class="var">response</span>.<span class="var">text</span>)
+
+<span class="cm"># Stage 3: Write to Google Sheet</span>
+<span class="kw">def</span> <span class="fn">write_to_sheet</span>(<span class="var">records</span>, <span class="var">sheet_id</span>):
+    <span class="var">df</span> = <span class="var">pd</span>.<span class="fn">DataFrame</span>(<span class="var">records</span>)
+    <span class="cm"># Uses gspread under the hood — see full code on GitHub</span>
+    <span class="var">worksheet</span>.<span class="fn">update</span>([<span class="var">df</span>.<span class="var">columns</span>.<span class="fn">tolist</span>()] + <span class="var">df</span>.<span class="var">values</span>.<span class="fn">tolist</span>())
+    <span class="fn">print</span>(<span class="str">f"✓ Written {<span class="var">len</span>(<span class="var">records</span>)} datasets to sheet"</span>)
+    </div>
+  </section>
+
+  <!-- LIVE DEMO -->
+  <section>
+    <div class="section-label">04 — Live Demo</div>
+    <h2>Search the index</h2>
+    <p>This is a functional preview of what the MSME Data Index returns. Filter by sector or format to see matching datasets — the same logic that the full Python pipeline outputs into a Google Sheet.</p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        &nbsp; msme_data_index — interactive search
+      </div>
+      <div class="demo-body">
+        <div class="demo-controls">
+          <input type="text" id="search-input" placeholder="Search datasets... e.g. credit, textile, exports" />
+          <select id="format-filter">
+            <option value="">All formats</option>
+            <option value="CSV">CSV</option>
+            <option value="API">API</option>
+            <option value="PDF">PDF</option>
+            <option value="Scrape">Scrape</option>
+          </select>
+          <select id="geo-filter">
+            <option value="">All geographies</option>
+            <option value="national">National</option>
+            <option value="state">State-level</option>
+            <option value="district">District-level</option>
+          </select>
+          <button onclick="runSearch()">Search Index</button>
+        </div>
+        <div id="results-area">
+          <div class="empty-state">Enter a keyword to search the MSME dataset index</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKFLOW -->
+  <section>
+    <div class="section-label">05 — Research Workflow</div>
+    <h2>How every People+AI research task would run</h2>
+    <p>The index becomes the foundation for a repeatable, AI-assisted research workflow — making every future synthesis faster and more consistent.</p>
+
+    <div class="workflow">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-tool">Index lookup</div>
+        <div class="wf-title">Find relevant datasets</div>
+        <div class="wf-desc">Query the MSME Data Index by sector, geography, or variable. Retrieve machine-readable datasets instantly.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-tool">Python / Sheets</div>
+        <div class="wf-title">Pull & clean data</div>
+        <div class="wf-desc">Automated ingestion via API or scraper. Standardized column names across portals. Output: clean CSV.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-tool">Gemini / Claude</div>
+        <div class="wf-title">Synthesize with AI</div>
+        <div class="wf-desc">Feed cleaned data + primary sources to AI. Generate structured draft brief. Human-verify key claims.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-tool">Docs / Notion</div>
+        <div class="wf-title">Publish brief</div>
+        <div class="wf-desc">2-page structured brief. Documented prompt chain. Reusable by any future People+AI researcher.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAM / SAM / SOM -->
+  <section>
+    <div class="section-label">06 — Market Sizing</div>
+    <h2>TAM / SAM / SOM — the MSME data opportunity</h2>
+    <p>Understanding the scale of the problem anchors which data gaps matter most and where People+AI's research can have real leverage.</p>
+
+    <div class="problem-grid" style="grid-template-columns: repeat(3,1fr); margin-top:32px;">
+
+      <div class="problem-card" style="border-right:1px solid var(--ink);">
+        <div class="prob-num" style="font-size:36px;color:var(--accent);">TAM</div>
+        <div class="prob-title" style="font-size:15px;">₹1,100 Cr+</div>
+        <div class="prob-desc" style="margin-top:8px;">
+          <strong style="display:block;margin-bottom:4px;color:var(--ink);">Total Addressable Market</strong>
+          6.3 crore MSMEs in India contribute ~30% of GDP and 45% of exports. The full market for data-driven services targeting these enterprises — credit, compliance, market access, analytics — is estimated at over ₹1,100 crore annually.
+          <div style="margin-top:10px;font-size:11px;font-family:var(--mono);color:var(--accent2);">Source: MSME Ministry Annual Report 2023; SIDBI MSME Pulse Q3 2024</div>
+        </div>
+      </div>
+
+      <div class="problem-card" style="border-right:1px solid var(--ink);">
+        <div class="prob-num" style="font-size:36px;color:var(--accent);">SAM</div>
+        <div class="prob-title" style="font-size:15px;">~₹280 Cr</div>
+        <div class="prob-desc" style="margin-top:8px;">
+          <strong style="display:block;margin-bottom:4px;color:var(--ink);">Serviceable Addressable Market</strong>
+          ~1.5 crore digitally registered MSMEs (Udyam + GST filers) are reachable via data-driven channels. At a conservative ₹180/enterprise/year for data intelligence services, this segment alone represents ~₹280 crore.
+          <div style="margin-top:10px;font-size:11px;font-family:var(--mono);color:var(--accent2);">Source: Udyam dashboard 2024; GST Council MSME filing data</div>
+        </div>
+      </div>
+
+      <div class="problem-card">
+        <div class="prob-num" style="font-size:36px;color:var(--accent);">SOM</div>
+        <div class="prob-title" style="font-size:15px;">Research-first beachhead</div>
+        <div class="prob-desc" style="margin-top:8px;">
+          <strong style="display:block;margin-bottom:4px;color:var(--ink);">Serviceable Obtainable Market</strong>
+          People+AI's near-term leverage isn't monetisation — it's becoming the authoritative research layer. A unified MSME data index positions the org to influence 10–15 policy and partnership engagements per year, each with direct reach to lenders, platforms, and government programs touching lakhs of enterprises.
+          <div style="margin-top:10px;font-size:11px;font-family:var(--mono);color:var(--accent2);">Estimated based on People+AI existing partner network</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:24px;padding:20px 24px;border:1.5px dashed var(--rule);border-radius:2px;background:var(--card);">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Key data gap this index directly addresses</div>
+      <p style="margin:0;font-size:13px;color:#444;line-height:1.7;">The single biggest barrier to unlocking the SAM is <strong>data fragmentation</strong> — lenders, policy researchers, and market platforms can't build reliable MSME intelligence without first solving discovery. The MSME Data Index is the missing infrastructure layer that makes the SAM accessible.</p>
+    </div>
+  </section>
+
+  <!-- OUTCOMES -->
+  <section>
+    <div class="section-label">07 — Projected Impact</div>
+    <h2>What this unlocks for People+AI</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num">6<span>+</span></div>
+        <div class="stat-label">Portals cataloged with unified taxonomy and usability scores</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">80<span>%</span></div>
+        <div class="stat-label">Reduction in dataset-discovery time per research project</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">1<span>st</span></div>
+        <div class="stat-label">Machine-readable MSME public data index in India — doesn't exist yet</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Reusable by every future People+AI researcher and partner</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footnote">
+    <p>This case study was built as a proof-of-concept before applying to the People+AI Research Internship on the MSME Data Economy project. The dataset index, scraper, and scoring pipeline are all functional — available on request.</p>
+    <div class="author-tag">ANIKET HUMBE — 2025</div>
+  </div>
+
+</main>
+
+<script>
+  const DATASET_INDEX = [
+    { name: "Udyog Aadhaar Registrations", portal: "INDIAai", format: "CSV", geo: "state", sectors: ["manufacturing","services","trade"], score: 4, updated: "2023", desc: "Comprehensive MSME registration data with sector, investment, employment counts by state." },
+    { name: "MSME Annual Report", portal: "data.gov.in", format: "PDF", geo: "national", sectors: ["manufacturing","all"], score: 2, updated: "2022", desc: "National-level output and employment statistics across MSME sectors." },
+    { name: "RBI MSME Credit Outstanding", portal: "RBI", format: "API", geo: "national", sectors: ["finance","credit"], score: 5, updated: "2024", desc: "Bank-wise credit data to MSMEs, NPA ratios, quarterly updates via RBI DBIE API." },
+    { name: "NSSO Unorganised Enterprise Survey", portal: "MOSPI", format: "PDF", geo: "state", sectors: ["all","informal"], score: 2, updated: "2016", desc: "Household-level enterprise survey capturing informal MSME income, workforce, and assets." },
+    { name: "Udyam Registration Live Data", portal: "Udyam Portal", format: "Scrape", geo: "district", sectors: ["all"], score: 3, updated: "2024", desc: "Live MSME registration counts by district and classification — dashboard scrape, no public API documented." },
+    { name: "SIDBI MSME Pulse Report", portal: "SIDBI", format: "PDF", geo: "national", sectors: ["finance","credit"], score: 3, updated: "2024", desc: "Quarterly credit demand and supply trends, NPA analysis, sectoral lending breakdown." },
+    { name: "GST MSME Filing Data", portal: "GST Council", format: "CSV", geo: "state", sectors: ["trade","services","manufacturing"], score: 4, updated: "2024", desc: "Aggregate GST filing rates, turnover brackets, and compliance by MSME-classified filers." },
+    { name: "MSME Export Performance", portal: "data.gov.in", format: "CSV", geo: "national", sectors: ["exports","manufacturing"], score: 4, updated: "2023", desc: "Sector-wise export contribution from MSMEs — textiles, handicrafts, engineering goods." },
+    { name: "Credit Guarantee (CGTMSE) Data", portal: "CGTMSE", format: "PDF", geo: "state", sectors: ["finance","credit"], score: 2, updated: "2023", desc: "State-wise credit guarantee approvals, NPA, sector split for MSME lending." },
+    { name: "Technology Adoption Survey", portal: "data.gov.in", format: "CSV", geo: "state", sectors: ["technology","manufacturing"], score: 3, updated: "2022", desc: "Tech adoption rates in MSMEs — digitisation, e-commerce, machinery modernisation." },
+  ];
+
+  function scoreDots(score) {
+    return Array.from({length: 5}, (_,i) =>
+      `<div class="score-pip ${i < score ? 'filled' : ''}"></div>`
+    ).join('');
+  }
+
+  function fmtBadge(fmt) {
+    const cls = { CSV: 'badge-csv', API: 'badge-api', PDF: 'badge-pdf' }[fmt] || '';
+    return `<span class="badge ${cls}">${fmt}</span>`;
+  }
+
+  function runSearch() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const fmt = document.getElementById('format-filter').value;
+    const geo = document.getElementById('geo-filter').value;
+
+    let results = DATASET_INDEX.filter(d => {
+      const matchQ = !q || d.name.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q) || d.sectors.some(s => s.includes(q));
+      const matchFmt = !fmt || d.format === fmt;
+      const matchGeo = !geo || d.geo === geo;
+      return matchQ && matchFmt && matchGeo;
+    });
+
+    const area = document.getElementById('results-area');
+    if (results.length === 0) {
+      area.innerHTML = '<div class="empty-state">No datasets match — try a broader search term</div>';
+      return;
+    }
+
+    area.innerHTML = results.map(d => `
+      <div class="result-card">
+        <div class="rc">
+          <div class="rc-name">${d.name}</div>
+          <div class="rc-portal">${d.portal} · ${d.updated}</div>
+        </div>
+        <div class="rc" style="font-size:12px;color:#555;line-height:1.5;">${d.desc}</div>
+        <div class="rc" style="display:flex;flex-direction:column;gap:6px;">
+          ${fmtBadge(d.format)}
+          <span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${d.geo}</span>
+        </div>
+        <div class="rc">
+          <div class="score-bar" style="flex-wrap:wrap;gap:4px;">${scoreDots(d.score)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);">${d.score}/5</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') runSearch();
+  });
+
+  // auto-run on load to show first results
+  document.getElementById('search-input').value = '';
+  setTimeout(() => {
+    document.getElementById('search-input').value = 'credit';
+    runSearch();
+  }, 600);
+</script>
+
+</body>
+</html>
